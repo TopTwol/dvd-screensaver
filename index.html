@@ -156,3 +156,36 @@ function setStyle(element, properties) {
 </script>
 </body>
 </html>
+
+
+ 
+<script>
+(async () => {
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        console.log('Requesting Screen Wake Lock...');
+        const wakeLock = await navigator.wakeLock.request('screen');
+        console.log('Screen Wake Lock is active');
+
+        // Reapply if tab becomes visible again
+        document.addEventListener('visibilitychange', async () => {
+          if (document.visibilityState === 'visible') {
+            console.log('Tab became visible again, re-requesting Screen Wake Lock');
+            await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock re-applied');
+          }
+        });
+      } catch (e) {
+        console.error('Screen Wake Lock failed:', e);
+      }
+    } else {
+      console.warn('Screen Wake Lock API not supported on this device');
+    }
+  }
+
+  // ts is also stolen proablly i forgot idc to spell right atp
+  await requestWakeLock();
+})();
+</script>
+
